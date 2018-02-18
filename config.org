@@ -1,0 +1,158 @@
+#+TITLE: My Emacs Configuration
+#+AUTHOR: Mohamed Saleh A. Abdelgadir
+#+EMAIL: mohamed.saleh16@gmail.com
+#+OPTIONS: H:2 num:nil toc:nil \n:nil @:t ::t |:t ^:{} _:{} *:t TeX:t LaTeX:t
+
+* ESSENTIAL CONFIGS
+#+BEGIN_SRC emacs-lisp
+    (menu-bar-mode -1)
+    (ido-mode)
+    (column-number-mode)
+    (show-paren-mode)
+    ;; (setq highlight-indentation-mode 1)
+    (add-hook 'prog-mode-hook 'highlight-indentation-mode)
+    (xterm-mouse-mode 1)
+
+    (setq-default indent-tabs-mode nil)
+    (electric-pair-mode 1)
+
+    (when (fboundp 'electric-indent-mode) (electric-indent-mode -1)) ; Disable electric-indent-mode
+
+    (global-hl-line-mode)
+
+    (global-linum-mode 1)
+    (setq linum-format "%d ")
+
+    (winner-mode t)
+    (windmove-default-keybindings)
+
+    (setq neo-smart-open t)
+
+    (global-auto-revert-mode 1)
+
+    (setq tab-width 4) ; or any other preferred value
+    (defvaralias 'c-basic-offset 'tab-width)
+    (defvaralias 'cperl-indent-level 'tab-width)
+
+    (setq x-select-enable-clipboard t) ; to be able to copy to clipboard
+
+    (which-key-mode 1)
+
+    (setq-default c-basic-offset 4)
+    ; style I want to use in c++ mode
+    (c-add-style "my-style" 
+        '("stroustrup"
+            (indent-tabs-mode . nil)        ; use spaces rather than tabs
+            (c-basic-offset . 4)            ; indent by four spaces
+            (c-offsets-alist . ((inline-open . 0)  ; custom indentation rules
+                                (brace-list-open . 0)
+                                (statement-case-open . +)))))
+
+    (defun my-c++-mode-hook ()
+        (c-set-style "my-style")        ; use my-style defined above
+        (auto-fill-mode)         
+        (c-toggle-auto-hungry-state 1))
+
+    (add-hook 'c++-mode-hook 'my-c++-mode-hook)
+    (setq multi-term-program "/bin/zsh")
+
+#+END_SRC  
+
+* BINDING/MAPPING
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "C-c C-c M-x") 'execute-extended-commad)
+
+;; scroll one line at a time (less "jumpy" than defaults)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(setq scroll-step 1) ;; keyboard scroll one line at a time
+
+(global-set-key (kbd "<mouse-4>") 'scroll-down-line)
+(global-set-key (kbd "<mouse-5>") 'scroll-up-line)
+
+(global-set-key [f7] 'neotree-toggle)
+(global-set-key [f8] 'helm-projectile)
+(global-set-key [f9] 'helm-projectile-grep)
+#+END_SRC
+
+* JAVASCRIPT/WEB MODES 
+#+BEGIN_SRC emacs-lisp
+    (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
+    (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+
+    (setq web-mode-enable-auto-pairing t)
+    (setq web-mode-enable-css-colorization t)
+    (setq web-mode-enable-comment-keywords t)
+
+    (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+    (add-hook 'js-mode-hook 'js2-minor-mode)
+
+    (add-to-list 'interpreter-mode-alist '("node" . js2-mode))
+    (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
+    (add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode))
+
+    (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-mode))
+    (add-to-list 'auto-mode-alist '("\\.ts?\\'" . typescript-mode))
+
+    (add-hook 'js2-mode-hook 'skewer-mode)
+    (add-hook 'css-mode-hook 'skewer-css-mode)
+    (add-hook 'html-mode-hook 'skewer-html-mode)
+#+END_SRC
+
+* PYTHON MODES 
+#+BEGIN_SRC emacs-lisp
+    (setq flymake-python-pyflakes-executable "flake8")
+#+END_SRC
+* YAML MODES 
+#+BEGIN_SRC emacs-lisp
+    (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+    (add-hook 'yaml-mode-hook 'flymake-yaml-load)
+#+END_SRC
+
+* BACKUPS
+#+BEGIN_SRC emacs-lisp
+    (setq
+        backup-by-copying t      ; don't clobber symlinks
+        backup-directory-alist
+        '(("." . "~/.emacs-backups"))    ; don't litter my fs tree
+        delete-old-versions t
+        kept-new-versions 6
+        kept-old-versions 2
+        version-control t)       ; use versioned backups
+#+END_SRC
+
+* APACHE-MODE
+#+BEGIN_SRC emacs-lisp
+    (autoload 'apache-mode "apache-mode" nil t)
+    (add-to-list 'auto-mode-alist '("\\.htaccess\\'"   . apache-mode))
+    (add-to-list 'auto-mode-alist '("httpd\\.conf\\'"  . apache-mode))
+    (add-to-list 'auto-mode-alist '("srm\\.conf\\'"    . apache-mode))
+    (add-to-list 'auto-mode-alist '("access\\.conf\\'" . apache-mode))
+    (add-to-list 'auto-mode-alist '("sites-\\(available\\|enabled\\)/" . apache-mode))
+#+END_SRC
+
+* ORG-MODE
+#+BEGIN_SRC emacs-lisp
+;; TODO
+#+END_SRC
+* PACKAGES
+#+BEGIN_SRC emacs-lisp
+    (require 'package)
+    (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                        (not (gnutls-available-p))))
+          (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
+    (add-to-list 'package-archives (cons "melpa" url) t))
+    (when (< emacs-major-version 24)
+        ;; For important compatibility libraries like cl-lib
+        (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+
+    (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t) ; Org-mode's repository
+    (add-to-list 'package-archives '("elpy" . "http://jorgenschaefer.github.io/packages/")) ; package-install elpy
+
+#+END_SRC
