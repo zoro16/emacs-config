@@ -26,14 +26,22 @@
     (winner-mode t)
     (windmove-default-keybindings)
     #+END_SRC
-** Not sure what does it do yet
-    #+BEGIN_SRC emacs-lisp
-    ;; (setq neo-smart-open t)
-    #+END_SRC
 ** Hide menu bar
     #+BEGIN_SRC emacs-lisp
     (menu-bar-mode -1)    
     #+END_SRC
+** Hide tool bar
+   #+BEGIN_SRC emacs-lisp
+   (tool-bar-mode -1)
+   #+END_SRC
+** Hide welcome page
+   #+BEGIN_SRC emacs-lisp
+   (setq inhibit-startup-screen t)
+   #+END_SRC
+** Hide scroll bar
+   #+BEGIN_SRC emacs-lisp
+   (scroll-bar-mode -1)
+   #+END_SRC
 ** Show column numbers
     #+BEGIN_SRC emacs-lisp
     (column-number-mode)    
