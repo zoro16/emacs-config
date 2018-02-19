@@ -13,7 +13,6 @@
       #+BEGIN_SRC emacs-lisp
       (setq tab-width 4)
       #+END_SRC
-
   - Auto revert any update in a buffer file
       #+BEGIN_SRC emacs-lisp
       (global-auto-revert-mode 1)
@@ -22,18 +21,15 @@
     #+BEGIN_SRC emacs-lisp
     (setq x-select-enable-clipboard t)
     #+END_SRC
-
   - Handle multiple windows and moves between them
     #+BEGIN_SRC emacs-lisp
     (winner-mode t)
     (windmove-default-keybindings)
     #+END_SRC
-
   - Not sure what does it do yet
     #+BEGIN_SRC emacs-lisp
     ;; (setq neo-smart-open t)
     #+END_SRC
-
   - Hide menu bar
     #+BEGIN_SRC emacs-lisp
     (menu-bar-mode -1)    
@@ -91,7 +87,28 @@
         kept-old-versions 2
         version-control t)       ; use versioned backups
     #+END_SRC
-
+  - Minibuffer completion
+    #+BEGIN_SRC emacs-lisp
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq enable-recursive-minibuffers t)
+    (global-set-key "\C-s" 'swiper)
+    (global-set-key (kbd "C-c C-r") 'ivy-resume)
+    (global-set-key (kbd "<f6>") 'ivy-resume)
+    (global-set-key (kbd "M-x") 'counsel-M-x)
+    (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+    (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+    (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+    (global-set-key (kbd "<f1> l") 'counsel-find-library)
+    (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+    (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+    (global-set-key (kbd "C-c g") 'counsel-git)
+    (global-set-key (kbd "C-c j") 'counsel-git-grep)
+    (global-set-key (kbd "C-c k") 'counsel-ag)
+    (global-set-key (kbd "C-x l") 'counsel-locate)
+    (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+    (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+    #+END_SRC
 * Key Bindings
 ** Appplications
     #+BEGIN_SRC emacs-lisp
