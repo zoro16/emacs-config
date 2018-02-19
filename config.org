@@ -4,79 +4,79 @@
 #+OPTIONS: H:2 num:nil toc:nil \n:nil @:t ::t |:t ^:{} _:{} *:t TeX:t LaTeX:t
 
 * Essential
-  - Indentations
-    - Disable indent by tabs
+** Indentations
+*** Disable indent by tabs
       #+BEGIN_SRC emacs-lisp
       (setq-default indent-tabs-mode nil)
       #+END_SRC
-    - Set tab width
+*** Set tab width
       #+BEGIN_SRC emacs-lisp
       (setq tab-width 4)
       #+END_SRC
-  - Auto revert any update in a buffer file
+** Auto revert any update in a buffer file
       #+BEGIN_SRC emacs-lisp
       (global-auto-revert-mode 1)
       #+END_SRC
-  - Enable copying to clipboard
+** Enable copying to clipboard
     #+BEGIN_SRC emacs-lisp
     (setq x-select-enable-clipboard t)
     #+END_SRC
-  - Handle multiple windows and moves between them
+** Handle multiple windows and moves between them
     #+BEGIN_SRC emacs-lisp
     (winner-mode t)
     (windmove-default-keybindings)
     #+END_SRC
-  - Not sure what does it do yet
+** Not sure what does it do yet
     #+BEGIN_SRC emacs-lisp
     ;; (setq neo-smart-open t)
     #+END_SRC
-  - Hide menu bar
+** Hide menu bar
     #+BEGIN_SRC emacs-lisp
     (menu-bar-mode -1)    
     #+END_SRC
-  - Show column numbers
+** Show column numbers
     #+BEGIN_SRC emacs-lisp
     (column-number-mode)    
     #+END_SRC
-  - Highlight line
+** Highlight line
     #+BEGIN_SRC emacs-lisp
     (global-hl-line-mode)
     #+END_SRC
-  - Highlight indentations
+** Highlight indentations
     #+BEGIN_SRC emacs-lisp
     (highlight-indent-guides-mode 1)
     #+END_SRC
-  - Show line numbers
+** Show line numbers
     #+BEGIN_SRC emacs-lisp
     (global-linum-mode 1)
     (setq linum-format "%d ")
     #+END_SRC
-  - Auto Pairing
+** Auto Pairing
     #+BEGIN_SRC emacs-lisp
     (electric-pair-mode 1)
     (when (fboundp 'electric-indent-mode) (electric-indent-mode -1)) ; Disable electric-indent-mode
     #+END_SRC
-  - Highlight the pairs when pointing at one of them
+** Highlight the pairs when pointing at one of them
     #+BEGIN_SRC emacs-lisp
     (show-paren-mode)    
     #+END_SRC
-  - Interactively do things with buffers and files.
+** Interactively do things with buffers and files.
     #+BEGIN_SRC emacs-lisp
     (ido-mode)
     #+END_SRC
-  - Shows which command or keybinding comes next
+** Shows which command or keybinding comes next
     #+BEGIN_SRC emacs-lisp
     (which-key-mode 1)
     #+END_SRC
-  - Simple mouse functionalities
+** Simple mouse functionalities
     #+BEGIN_SRC emacs-lisp
     (xterm-mouse-mode 1)
     #+END_SRC
-  - Use ZSH with multi-term
+** Use ZSH with multi-term
     #+BEGIN_SRC emacs-lisp
     (setq multi-term-program "/bin/zsh")
     #+END_SRC
-  - Backups
+** Backups
     #+BEGIN_SRC emacs-lisp
     (setq
         backup-by-copying t      ; don't clobber symlinks
@@ -87,7 +87,7 @@
         kept-old-versions 2
         version-control t)       ; use versioned backups
     #+END_SRC
-  - Minibuffer completion
+** Minibuffer completion
     #+BEGIN_SRC emacs-lisp
     (ivy-mode 1)
     (setq ivy-use-virtual-buffers t)
@@ -109,6 +109,27 @@
     (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
     (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
     #+END_SRC
+** Scroll one line at a time (less "jumpy" than defaults)
+*** One line at a time
+    #+BEGIN_SRC emacs-lisp 
+        (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+    #+END_SRC
+
+*** Don't accelerate scrolling
+    #+BEGIN_SRC emacs-lisp 
+        (setq mouse-wheel-progressive-speed nil)
+    #+END_SRC
+
+*** Scroll window under mouse
+    #+BEGIN_SRC emacs-lisp      
+        (setq mouse-wheel-follow-mouse 't)
+    #+END_SRC
+
+*** Keyboard scroll one line at a time
+    #+BEGIN_SRC emacs-lisp 
+        (setq scroll-step 1)
+    #+END_SRC
+
 * Key Bindings
 ** Appplications
     #+BEGIN_SRC emacs-lisp
@@ -118,32 +139,12 @@
        (global-set-key (kbd "M-x") 'smex)
        (global-set-key (kbd "C-c C-c M-x") 'execute-extended-commad)
     #+END_SRC
-** Mouse Config
-*** Scroll one line at a time (less "jumpy" than defaults)
-    - One line at a time
-        #+BEGIN_SRC emacs-lisp 
-            (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
-        #+END_SRC
-
-    - Don't accelerate scrolling
-        #+BEGIN_SRC emacs-lisp 
-            (setq mouse-wheel-progressive-speed nil)
-        #+END_SRC
-
-    - Scroll window under mouse
-        #+BEGIN_SRC emacs-lisp      
-            (setq mouse-wheel-follow-mouse 't)
-        #+END_SRC
-
-    - Keyboard scroll one line at a time
-        #+BEGIN_SRC emacs-lisp 
-            (setq scroll-step 1)
-        #+END_SRC
-    - Scroll Up and Down
-        #+BEGIN_SRC emacs-lisp
-            (global-set-key (kbd "<mouse-4>") 'scroll-down-line)
-            (global-set-key (kbd "<mouse-5>") 'scroll-up-line)
-        #+END_SRC
+** Mouse
+*** Scroll Up and Down
+    #+BEGIN_SRC emacs-lisp
+        (global-set-key (kbd "<mouse-4>") 'scroll-down-line)
+        (global-set-key (kbd "<mouse-5>") 'scroll-up-line)
+    #+END_SRC
 
 * Develpoments 
 ** JavaScript
