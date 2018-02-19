@@ -4,45 +4,93 @@
 #+OPTIONS: H:2 num:nil toc:nil \n:nil @:t ::t |:t ^:{} _:{} *:t TeX:t LaTeX:t
 
 * Essential
-#+BEGIN_SRC emacs-lisp
-    (menu-bar-mode -1)
-    (ido-mode)
-    (column-number-mode)
-    (show-paren-mode)
-    (highlight-indentation-mode 1)
-    (add-hook 'prog-mode-hook 'highlight-indentation-mode)
-    (xterm-mouse-mode 1)
+  - Indentations
+    - Disable indent by tabs
+      #+BEGIN_SRC emacs-lisp
+      (setq-default indent-tabs-mode nil)
+      #+END_SRC
+    - Set tab width
+      #+BEGIN_SRC emacs-lisp
+      (setq tab-width 4)
+      #+END_SRC
 
-    (setq-default indent-tabs-mode nil)
-    (electric-pair-mode 1)
+  - Auto revert any update in a buffer file
+      #+BEGIN_SRC emacs-lisp
+      (global-auto-revert-mode 1)
+      #+END_SRC
+  - Enable copying to clipboard
+    #+BEGIN_SRC emacs-lisp
+    (setq x-select-enable-clipboard t)
+    #+END_SRC
 
-    (when (fboundp 'electric-indent-mode) (electric-indent-mode -1)) ; Disable electric-indent-mode
-
-    (global-hl-line-mode)
-
-    (global-linum-mode 1)
-    (setq linum-format "%d ")
-
+  - Handle multiple windows and moves between them
+    #+BEGIN_SRC emacs-lisp
     (winner-mode t)
     (windmove-default-keybindings)
+    #+END_SRC
 
-    (setq neo-smart-open t)
+  - Not sure what does it do yet
+    #+BEGIN_SRC emacs-lisp
+    ;; (setq neo-smart-open t)
+    #+END_SRC
 
-    (global-auto-revert-mode 1)
-
-    (setq tab-width 4) ; or any other preferred value
-    (defvaralias 'c-basic-offset 'tab-width)
-    (defvaralias 'cperl-indent-level 'tab-width)
-
-    (setq x-select-enable-clipboard t) ; to be able to copy to clipboard
-
+  - Hide menu bar
+    #+BEGIN_SRC emacs-lisp
+    (menu-bar-mode -1)    
+    #+END_SRC
+  - Show column numbers
+    #+BEGIN_SRC emacs-lisp
+    (column-number-mode)    
+    #+END_SRC
+  - Highlight line
+    #+BEGIN_SRC emacs-lisp
+    (global-hl-line-mode)
+    #+END_SRC
+  - Highlight indentations
+    #+BEGIN_SRC emacs-lisp
+    (highlight-indent-guides-mode 1)
+    #+END_SRC
+  - Show line numbers
+    #+BEGIN_SRC emacs-lisp
+    (global-linum-mode 1)
+    (setq linum-format "%d ")
+    #+END_SRC
+  - Auto Pairing
+    #+BEGIN_SRC emacs-lisp
+    (electric-pair-mode 1)
+    (when (fboundp 'electric-indent-mode) (electric-indent-mode -1)) ; Disable electric-indent-mode
+    #+END_SRC
+  - Highlight the pairs when pointing at one of them
+    #+BEGIN_SRC emacs-lisp
+    (show-paren-mode)    
+    #+END_SRC
+  - Interactively do things with buffers and files.
+    #+BEGIN_SRC emacs-lisp
+    (ido-mode)
+    #+END_SRC
+  - Shows which command or keybinding comes next
+    #+BEGIN_SRC emacs-lisp
     (which-key-mode 1)
-
-    (setq-default c-basic-offset 4)
-
+    #+END_SRC
+  - Simple mouse functionalities
+    #+BEGIN_SRC emacs-lisp
+    (xterm-mouse-mode 1)
+    #+END_SRC
+  - Use ZSH with multi-term
+    #+BEGIN_SRC emacs-lisp
     (setq multi-term-program "/bin/zsh")
-
-#+END_SRC  
+    #+END_SRC
+  - Backups
+    #+BEGIN_SRC emacs-lisp
+    (setq
+        backup-by-copying t      ; don't clobber symlinks
+        backup-directory-alist
+        '(("." . "~/.emacs-backups"))    ; don't litter my fs tree
+        delete-old-versions t
+        kept-new-versions 6
+        kept-old-versions 2
+        version-control t)       ; use versioned backups
+    #+END_SRC
 
 * Key Bindings
 ** Appplications
@@ -141,20 +189,23 @@
 ** C++
    - Define a style
      #+BEGIN_SRC emacs-lisp
-     (c-add-style "my-style" 
-         '("stroustrup"
-              (indent-tabs-mode . nil)        ; use spaces rather than tabs
-              (c-basic-offset . 4)            ; indent by four spaces
-              (c-offsets-alist . ((inline-open . 0)  ; custom indentation rules
-                  (brace-list-open . 0)
-                  (statement-case-open . +)))))
+       (defvaralias 'c-basic-offset 'tab-width)
+       (defvaralias 'cperl-indent-level 'tab-width)
+       (setq-default c-basic-offset 4)
+       (c-add-style "my-style" 
+           '("stroustrup"
+                (indent-tabs-mode . nil)        ; use spaces rather than tabs
+                (c-basic-offset . 4)            ; indent by four spaces
+                (c-offsets-alist . ((inline-open . 0)  ; custom indentation rules
+                    (brace-list-open . 0)
+                    (statement-case-open . +)))))
      #+END_SRC
   - Use the previous style
     #+BEGIN_SRC emacs-lisp
       (defun my-c++-mode-hook ()
-          (c-set-style "my-style")        ; use my-style defined above
-          (auto-fill-mode)         
-          (c-toggle-auto-hungry-state 1))
+        (c-set-style "my-style")        ; use my-style defined above
+        (auto-fill-mode)         
+        (c-toggle-auto-hungry-state 1))
     #+END_SRC
   - Add a Hook
     #+BEGIN_SRC emacs-lisp
@@ -164,17 +215,6 @@
     #+BEGIN_SRC emacs-lisp
         (add-hook 'org-mode-hook 'org-bullets-mode)
     #+END_SRC
-* Backups
-#+BEGIN_SRC emacs-lisp
-    (setq
-        backup-by-copying t      ; don't clobber symlinks
-        backup-directory-alist
-        '(("." . "~/.emacs-backups"))    ; don't litter my fs tree
-        delete-old-versions t
-        kept-new-versions 6
-        kept-old-versions 2
-        version-control t)       ; use versioned backups
-#+END_SRC
 * Packages
 #+BEGIN_SRC emacs-lisp
     (require 'package)
