@@ -242,12 +242,12 @@
         (add-hook 'org-mode-hook 'org-bullets-mode)
     #+END_SRC
 * Packages
-#+BEGIN_SRC emacs-lisp
+** Link to extranal packages
+   #+BEGIN_SRC emacs-lisp
     (require 'package)
-    (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                        (not (gnutls-available-p))))
-          (url (concat ("https") "://melpa.org/packages/")))
-    (add-to-list 'package-archives (cons "melpa" url) t))
+    (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+    (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
+
     (when (< emacs-major-version 24)
         ;; For important compatibility libraries like cl-lib
         (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
@@ -255,4 +255,4 @@
     (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t) ; Org-mode's repository
     (add-to-list 'package-archives '("elpy" . "https://jorgenschaefer.github.io/packages/")) ; package-install elpy
 
-#+END_SRC
+   #+END_SRC
