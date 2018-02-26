@@ -155,6 +155,11 @@
     #+END_SRC
 
 * Develpoments 
+** All Programming Modes
+   - Code folding hook
+     #+BEGIN_SRC emacs-lisp
+         (add-hook 'prog-mode-hook #'hs-minor-mode)
+     #+END_SRC
 ** JavaScript
     - JS Files
         #+BEGIN_SRC emacs-lisp
@@ -175,29 +180,34 @@
             (add-to-list 'auto-mode-alist '("\\.ts?\\'" . typescript-mode))
         #+END_SRC
 
-    #+BEGIN_SRC
-        (add-hook 'js2-mode-hook 'skewer-mode)
-        (add-hook 'css-mode-hook 'skewer-css-mode)
-        (add-hook 'html-mode-hook 'skewer-html-mode)
-    #+END_SRC
-
+    - live interaction with JavaScript, CSS, and HTML in a web browser
+        #+BEGIN_SRC
+            (add-hook 'js2-mode-hook 'skewer-mode)
+            (add-hook 'css-mode-hook 'skewer-css-mode)
+            (add-hook 'html-mode-hook 'skewer-html-mode)
+        #+END_SRC
 ** Web
-    #+BEGIN_SRC emacs-lisp
-        (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-        (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-        (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-        (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
-        (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-
-        (setq web-mode-enable-auto-pairing t)
-        (setq web-mode-enable-css-colorization t)
-        (setq web-mode-enable-comment-keywords t)
-    #+END_SRC
+    - Setup web mode
+        #+BEGIN_SRC emacs-lisp
+            (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+            (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+            (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+            (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+            (setq web-mode-enable-auto-pairing t)
+            (setq web-mode-enable-css-colorization t)
+            (setq web-mode-enable-comment-keywords t)
+        #+END_SRC
+    - Setup Vuejs mode
+        #+BEGIN_SRC emacs-lisp
+            (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
+        #+END_SRC
 
 ** Python
-     #+BEGIN_SRC emacs-lisp
-         (setq flymake-python-pyflakes-executable "flake8")
-     #+END_SRC
+    - Flake8 as a Linter
+        #+BEGIN_SRC emacs-lisp
+           (setq flymake-python-pyflakes-executable "flake8")
+        #+END_SRC
+
 ** Yaml 
      #+BEGIN_SRC emacs-lisp
         (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
@@ -226,17 +236,18 @@
                     (brace-list-open . 0)
                     (statement-case-open . +)))))
      #+END_SRC
-  - Use the previous style
-    #+BEGIN_SRC emacs-lisp
-      (defun my-c++-mode-hook ()
-        (c-set-style "my-style")        ; use my-style defined above
-        (auto-fill-mode)         
-        (c-toggle-auto-hungry-state 1))
-    #+END_SRC
-  - Add a Hook
-    #+BEGIN_SRC emacs-lisp
-      (add-hook 'c++-mode-hook 'my-c++-mode-hook)
-    #+END_SRC
+   - Use the previous style
+     #+BEGIN_SRC emacs-lisp
+       (defun my-c++-mode-hook ()
+         (c-set-style "my-style")        ; use my-style defined above
+         (auto-fill-mode)
+         (c-toggle-auto-hungry-state 1))
+     #+END_SRC
+   - Add a the newly created Hook
+     #+BEGIN_SRC emacs-lisp
+       (add-hook 'c++-mode-hook 'my-c++-mode-hook)
+     #+END_SRC
+
 ** Org
     #+BEGIN_SRC emacs-lisp
         (add-hook 'org-mode-hook 'org-bullets-mode)
