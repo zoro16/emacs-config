@@ -257,6 +257,11 @@
      #+BEGIN_SRC emacs-lisp
          (setq doc-view-continuous t)
      #+END_SRC
+   - TODO keywords as workflow states
+     #+BEGIN_SRC emacs-lisp
+         (setq org-todo-keywords
+             '((sequence "TODO" "PENDING" "DOING" "|" "DONE" "DELEGATED")))
+     #+END_SRC
 * Packages
 ** Link to extranal packages
    #+BEGIN_SRC emacs-lisp
