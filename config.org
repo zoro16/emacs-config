@@ -6,86 +6,86 @@
 * Essentials
 ** Indentations
 *** Disable indent by tabs
-      #+BEGIN_SRC emacs-lisp
+      #+BEGIN_SRC emacs-lisp :tangle yes
       (setq-default indent-tabs-mode nil)
       #+END_SRC
 *** Set tab width
-      #+BEGIN_SRC emacs-lisp
+      #+BEGIN_SRC emacs-lisp :tangle yes
       (setq tab-width 4)
       #+END_SRC
 ** Auto revert any update in a buffer file
-      #+BEGIN_SRC emacs-lisp
+      #+BEGIN_SRC emacs-lisp :tangle yes
       (global-auto-revert-mode 1)
       #+END_SRC
 ** Enable copying to clipboard
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle yes
     (setq x-select-enable-clipboard t)
     #+END_SRC
 ** Handle multiple windows and moves between them
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle yes
     (winner-mode t)
     (windmove-default-keybindings)
     #+END_SRC
 ** Hide menu bar
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle yes
     (menu-bar-mode -1)    
     #+END_SRC
 ** Hide tool bar
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle yes
    (tool-bar-mode -1)
    #+END_SRC
 ** Hide welcome page
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle yes
    (setq inhibit-startup-screen t)
    #+END_SRC
 ** Hide scroll bar
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle yes
    (scroll-bar-mode -1)
    #+END_SRC
 ** Show column numbers
-    #+BEGIN_SRC emacs-lisp
-    (column-number-mode)    
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    (column-number-mode)
     #+END_SRC
 ** Highlight line
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle yes
     (global-hl-line-mode)
     #+END_SRC
 ** Highlight indentations
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle yes
     (highlight-indent-guides-mode 1)
     #+END_SRC
 ** Show line numbers
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle yes
     (global-linum-mode 1)
     (setq linum-format "%d ")
     #+END_SRC
 ** Auto Pairing
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle yes
     (electric-pair-mode 1)
     (when (fboundp 'electric-indent-mode) (electric-indent-mode -1)) ; Disable electric-indent-mode
     #+END_SRC
 ** Highlight the pairs when pointing at one of them
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle yes
     (show-paren-mode)    
     #+END_SRC
 ** Interactively do things with buffers and files.
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle yes
     (ido-mode)
     #+END_SRC
 ** Shows which command or keybinding comes next
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle yes
     (which-key-mode 1)
     #+END_SRC
 ** Simple mouse functionalities
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle yes
     (xterm-mouse-mode 1)
     #+END_SRC
 ** Use ZSH with multi-term
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle yes
     (setq multi-term-program "/bin/zsh")
     #+END_SRC
 ** Backups
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle yes
     (setq
         backup-by-copying t      ; don't clobber symlinks
         backup-directory-alist
@@ -96,7 +96,7 @@
         version-control t)       ; use versioned backups
     #+END_SRC
 ** Minibuffer completion
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle yes
     (ivy-mode 1)
     (setq ivy-use-virtual-buffers t)
     (setq enable-recursive-minibuffers t)
@@ -119,28 +119,27 @@
     #+END_SRC
 ** Scroll one line at a time (less "jumpy" than defaults)
 *** One line at a time
-    #+BEGIN_SRC emacs-lisp 
+    #+BEGIN_SRC emacs-lisp  :tangle yes
         (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
     #+END_SRC
 
 *** Don't accelerate scrolling
-    #+BEGIN_SRC emacs-lisp 
+    #+BEGIN_SRC emacs-lisp  :tangle yes
         (setq mouse-wheel-progressive-speed nil)
     #+END_SRC
 
 *** Scroll window under mouse
-    #+BEGIN_SRC emacs-lisp      
+    #+BEGIN_SRC emacs-lisp :tangle yes
         (setq mouse-wheel-follow-mouse 't)
     #+END_SRC
 
 *** Keyboard scroll one line at a time
-    #+BEGIN_SRC emacs-lisp 
+    #+BEGIN_SRC emacs-lisp  :tangle yes
         (setq scroll-step 1)
     #+END_SRC
-
 * Key Bindings
 ** Appplications
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle yes
        (global-set-key [f7] 'neotree-toggle)
        (global-set-key [f8] 'helm-projectile)
        (global-set-key [f9] 'helm-projectile-grep)
@@ -149,46 +148,45 @@
     #+END_SRC
 ** Mouse
 *** Scroll Up and Down
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle yes
         (global-set-key (kbd "<mouse-4>") 'scroll-down-line)
         (global-set-key (kbd "<mouse-5>") 'scroll-up-line)
     #+END_SRC
-
 * Develpoments 
 ** All Programming Modes
    - Code folding hook
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp :tangle yes
          (add-hook 'prog-mode-hook #'hs-minor-mode)
      #+END_SRC
 ** JavaScript
     - JS Files
-        #+BEGIN_SRC emacs-lisp
+        #+BEGIN_SRC emacs-lisp :tangle yes
             (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
             (add-hook 'js-mode-hook 'js2-minor-mode)
             (add-to-list 'interpreter-mode-alist '("node" . js2-mode))
         #+END_SRC
 
     - JSX Files
-        #+BEGIN_SRC emacs-lisp
+        #+BEGIN_SRC emacs-lisp :tangle yes
             (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
             (add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode))
         #+END_SRC
         
     - TypeScript Files
-        #+BEGIN_SRC emacs-lisp
+        #+BEGIN_SRC emacs-lisp :tangle yes
             (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-mode))
             (add-to-list 'auto-mode-alist '("\\.ts?\\'" . typescript-mode))
         #+END_SRC
 
     - live interaction with JavaScript, CSS, and HTML in a web browser
-        #+BEGIN_SRC
+        #+BEGIN_SRC emacs-lisp :tangle yes
             (add-hook 'js2-mode-hook 'skewer-mode)
             (add-hook 'css-mode-hook 'skewer-css-mode)
             (add-hook 'html-mode-hook 'skewer-html-mode)
         #+END_SRC
 ** Web
     - Setup web mode
-        #+BEGIN_SRC emacs-lisp
+        #+BEGIN_SRC emacs-lisp :tangle yes
             (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
             (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
             (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
@@ -198,23 +196,21 @@
             (setq web-mode-enable-comment-keywords t)
         #+END_SRC
     - Setup Vuejs mode
-        #+BEGIN_SRC emacs-lisp
+        #+BEGIN_SRC emacs-lisp :tangle yes
             (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
         #+END_SRC
-
 ** Python
     - Flake8 as a Linter
-        #+BEGIN_SRC emacs-lisp
+        #+BEGIN_SRC emacs-lisp :tangle yes
            (setq flymake-python-pyflakes-executable "flake8")
         #+END_SRC
-
 ** Yaml 
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp :tangle yes
         (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
         (add-hook 'yaml-mode-hook 'flymake-yaml-load)
      #+END_SRC
 ** Apache
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp :tangle yes
         (autoload 'apache-mode "apache-mode" nil t)
         (add-to-list 'auto-mode-alist '("\\.htaccess\\'"   . apache-mode))
         (add-to-list 'auto-mode-alist '("httpd\\.conf\\'"  . apache-mode))
@@ -224,7 +220,7 @@
      #+END_SRC
 ** C++
    - Define a style
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp :tangle yes
        (defvaralias 'c-basic-offset 'tab-width)
        (defvaralias 'cperl-indent-level 'tab-width)
        (setq-default c-basic-offset 4)
@@ -237,40 +233,39 @@
                     (statement-case-open . +)))))
      #+END_SRC
    - Use the previous style
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp :tangle yes
        (defun my-c++-mode-hook ()
          (c-set-style "my-style")        ; use my-style defined above
          (auto-fill-mode)
          (c-toggle-auto-hungry-state 1))
      #+END_SRC
    - Add a the newly created Hook
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp :tangle yes
        (add-hook 'c++-mode-hook 'my-c++-mode-hook)
      #+END_SRC
-
 ** Org
    - Beautify the bullets
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle yes
         (add-hook 'org-mode-hook 'org-bullets-mode)
     #+END_SRC
    - PDF continuous view
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp :tangle yes
          (setq doc-view-continuous t)
      #+END_SRC
    - TODO keywords as workflow states
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp :tangle yes
          (setq org-todo-keywords
              '((sequence "TODO" "PENDING" "DOING" "|" "DONE" "DELEGATED")))
      #+END_SRC
    - Presentations with Reveal.js
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp :tangle yes
        (require 'ox-reveal)
        (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/")
        (setq Org-Reveal-title-slide nil)
      #+END_SRC
 * Packages
 ** Link to extranal packages
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle yes
     (require 'package)
     (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
     (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
