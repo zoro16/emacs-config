@@ -4,6 +4,9 @@
 (require 'org)
 (org-babel-load-file "~/.emacs.d/config.org")
 
+(require 'gnutls)
+(add-to-list 'gnutls-trustfiles "/usr/local/etc/openssl/cert.pem")
+
 (epa-file-enable)
 (ac-config-default)
 (put 'upcase-region 'disabled nil)
