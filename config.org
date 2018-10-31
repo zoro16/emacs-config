@@ -255,7 +255,7 @@
    - TODO keywords as workflow states
      #+BEGIN_SRC emacs-lisp :tangle yes
          (setq org-todo-keywords
-             '((sequence "TODO" "PENDING" "DOING" "|" "DONE" "DELEGATED")))
+             '((sequence "TODO" "PENDING" "DOING" "|" "CANCELLED" "DONE" "DELEGATED")))
      #+END_SRC
    - Presentations with Reveal.js
      #+BEGIN_SRC emacs-lisp :tangle yes
@@ -263,6 +263,11 @@
        (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/")
        (setq Org-Reveal-title-slide nil)
      #+END_SRC
+** Android
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (require 'android-mode)
+   (custom-set-variables '(android-mode-sdk-dir "~/Android/Sdk"))
+   #+END_SRC
 * Packages
 ** Link to extranal packages
    #+BEGIN_SRC emacs-lisp :tangle yes
