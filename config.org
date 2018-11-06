@@ -551,7 +551,7 @@ Disabled for now because too slow on start.
 
 * Window behavior
 ** Disable the bell
-Aweful atrocious noise on Windows
+Awful atrocious noise on Windows
 #+BEGIN_SRC emacs-lisp
 (setq visible-bell 1)
 #+END_SRC
