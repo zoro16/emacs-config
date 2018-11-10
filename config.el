@@ -1,4 +1,4 @@
-;; Don't edit this file, edit /home/zoro/emacs-config/config.org instead ...
+;; Don't edit this file, edit /Users/zoro/emacs-config/config.org instead ...
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
@@ -13,6 +13,12 @@
 (package-initialize)
   (setq tls-checktrust t)
   (setq gnutls-verify-error t)
+(if (eq system-type 'darwin)
+  (use-package gnutls
+    :config
+      (require 'gnutls)
+      (add-to-list 'gnutls-trustfiles "/usr/local/etc/openssl/cert.pem"))
+)
 (mapc
  (lambda (package)
    (if (not (package-installed-p package))
@@ -59,10 +65,10 @@
   (use-package git-timemachine)
   (use-package magit-gh-pulls
     :config (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls))
-  (setq user-full-name "Adrien Brochard"
-        calendar-latitude 40.7
-        calendar-longitude -73.98
-        calendar-location-name "New York, NY")
+  (setq user-full-name "Mohamed Saleh A. Abdelgadir"
+        calendar-latitude 5.41666666667
+        calendar-longitude 100.316666667
+        calendar-location-name "Penang, MY")
 (defun generate-scratch-buffer ()
   "Create and switch to a temporary scratch buffer with a random
      name."
@@ -75,12 +81,6 @@
     (find-alternate-file
      (concat "/sudo:root@localhost:"
              buffer-file-name))))
-(use-package xkcd)
-(defun showxkcd ()
-  "Call this to show xkcd comic of the day on start"
-  (require 'xkcd)
-  (xkcd)
-  (switch-to-buffer "*xkcd*"))
 (defun replace-token (token)
   "Replace JSON web token for requests"
   (interactive "sEnter the new token: ")
@@ -158,7 +158,7 @@
         (comment-region (region-beginning) (region-end)))))
   (defun edit-config-file ()
     (interactive)
-    (find-file (concat config-load-path "configuration.org")))
+    (find-file (concat config-load-path "config.org")))
   (defun email-selection ()
     (interactive)
     (copy-region-as-kill (region-beginning) (region-end))
@@ -272,7 +272,7 @@
            (plantuml . t)
            (python . t)
            (gnuplot . t)
-           (shell . t)
+           ;;(shell . t)
            (ledger . t)
            (org . t)
            (latex . t)
@@ -690,13 +690,6 @@
         python-shell-interpreter-args "--simple-prompt -i")
   (use-package company-jedi
     :config (add-to-list 'company-backends 'company-jedi))
-  (defun pipenv-activate ()
-    (interactive)
-    (pythonic-activate (shell-command-to-string "pipenv --venv")))
-
-  (defun pipenv-deactivate ()
-    (interactive)
-    (pythonic-deactivate))
   (use-package dockerfile-mode
     :mode "Dockerfile\\'")
   (use-package docker-compose-mode
@@ -708,79 +701,6 @@
     (find-file "/var/log/syslog")
     ;; (syslog-mode)
     (goto-char (point-max)))
-  (use-package eshell
-    :init
-    (setq eshell-scroll-to-bottom-on-input 'all
-          eshell-error-if-no-glob t
-          eshell-hist-ignoredups t
-          eshell-save-history-on-exit t
-          eshell-prefer-lisp-functions nil
-          eshell-destroy-buffer-when-process-dies t))
-  (setq eshell-prompt-function
-        (lambda ()
-          (concat
-           (propertize "┌─[" 'face `(:foreground "green"))
-           (propertize (user-login-name) 'face `(:foreground "red"))
-           (propertize "@" 'face `(:foreground "green"))
-           (propertize (system-name) 'face `(:foreground "lightblue"))
-           (propertize "]──[" 'face `(:foreground "green"))
-           (propertize (format-time-string "%H:%M" (current-time)) 'face `(:foreground "yellow"))
-           (propertize "]──[" 'face `(:foreground "green"))
-           (propertize (concat (eshell/pwd)) 'face `(:foreground "white"))
-           (propertize "]\n" 'face `(:foreground "green"))
-           (propertize "└─>" 'face `(:foreground "green"))
-           (propertize (if (= (user-uid) 0) " # " " $ ") 'face `(:foreground "green"))
-           )))
-  (setq eshell-visual-commands '("htop" "vi" "screen" "top" "less"
-                                 "more" "lynx" "ncftp" "pine" "tin" "trn" "elm"
-                                 "vim"))
-
-  (setq eshell-visual-subcommands '("git" "log" "diff" "show" "ssh"))
-  (setenv "PAGER" "cat")
-  (use-package eshell-autojump)
-  (defalias 'ff 'find-file)
-  (defalias 'd 'dired)
-  (defun eshell/clear ()
-    (let ((inhibit-read-only t))
-      (erase-buffer)))
-  (defun eshell/gst (&rest args)
-      (magit-status (pop args) nil)
-      (eshell/echo))   ;; The echo command suppresses output
-  (defun eshell/-buffer-as-args (buffer separator command)
-    "Takes the contents of BUFFER, and splits it on SEPARATOR, and
-  runs the COMMAND with the contents as arguments. Use an argument
-  `%' to substitute the contents at a particular point, otherwise,
-  they are appended."
-    (let* ((lines (with-current-buffer buffer
-                    (split-string
-                     (buffer-substring-no-properties (point-min) (point-max))
-                     separator)))
-           (subcmd (if (-contains? command "%")
-                       (-flatten (-replace "%" lines command))
-                     (-concat command lines)))
-           (cmd-str  (string-join subcmd " ")))
-      (message cmd-str)
-      (eshell-command-result cmd-str)))
-
-  (defun eshell/bargs (buffer &rest command)
-    "Passes the lines from BUFFER as arguments to COMMAND."
-    (eshell/-buffer-as-args buffer "\n" command))
-
-  (defun eshell/sargs (buffer &rest command)
-    "Passes the words from BUFFER as arguments to COMMAND."
-    (eshell/-buffer-as-args buffer nil command))
-  (defun eshell/close ()
-    (delete-window))
-  (add-hook 'eshell-mode-hook
-            (lambda ()
-              (define-key eshell-mode-map (kbd "C-M-a") 'eshell-previous-prompt)
-              (define-key eshell-mode-map (kbd "C-M-e") 'eshell-next-prompt)
-              (define-key eshell-mode-map (kbd "M-r") 'helm-eshell-history)))
-  (defun eshell-pop--kill-and-delete-window ()
-    (unless (one-window-p)
-      (delete-window)))
-
-  (add-hook 'eshell-exit-hook 'eshell-pop--kill-and-delete-window)
   (require 'dired-x)
   (setq dired-listing-switches "-alh")
   (use-package yaml-mode
