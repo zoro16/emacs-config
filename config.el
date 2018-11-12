@@ -13,6 +13,12 @@
 (package-initialize)
   (setq tls-checktrust t)
   (setq gnutls-verify-error t)
+(if (eq system-type 'darwin)
+  (use-package gnutls
+    :config
+      (require 'gnutls)
+      (add-to-list 'gnutls-trustfiles "/usr/local/etc/openssl/cert.pem"))
+)
 (mapc
  (lambda (package)
    (if (not (package-installed-p package))
@@ -59,10 +65,10 @@
   (use-package git-timemachine)
   (use-package magit-gh-pulls
     :config (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls))
-  (setq user-full-name "Adrien Brochard"
-        calendar-latitude 40.7
-        calendar-longitude -73.98
-        calendar-location-name "New York, NY")
+  (setq user-full-name "Mohamed Saleh A. Abdelgadir"
+        calendar-latitude 5.41666666667
+        calendar-longitude 100.316666667
+        calendar-location-name "Penang, MY")
 (defun generate-scratch-buffer ()
   "Create and switch to a temporary scratch buffer with a random
      name."
@@ -75,12 +81,6 @@
     (find-alternate-file
      (concat "/sudo:root@localhost:"
              buffer-file-name))))
-(use-package xkcd)
-(defun showxkcd ()
-  "Call this to show xkcd comic of the day on start"
-  (require 'xkcd)
-  (xkcd)
-  (switch-to-buffer "*xkcd*"))
 (defun replace-token (token)
   "Replace JSON web token for requests"
   (interactive "sEnter the new token: ")
@@ -158,7 +158,7 @@
         (comment-region (region-beginning) (region-end)))))
   (defun edit-config-file ()
     (interactive)
-    (find-file (concat config-load-path "configuration.org")))
+    (find-file (concat config-load-path "config.org")))
   (defun email-selection ()
     (interactive)
     (copy-region-as-kill (region-beginning) (region-end))
@@ -233,36 +233,108 @@
 (global-set-key (kbd "<end>") 'end-of-buffer)
 (global-set-key (kbd "C-c q") 'auto-fill-mode)
   (global-set-key (kbd "C-x C-;") 'comment-line)
-  (use-package f)
-  (use-package org)
-  (setq org-directory "~/org/")
-  (setq org-agendafiles '("~/org"))
+     (use-package f)
+     (use-package org)
 
-  (defun org-file-path (filename)
-    "Return the absolute address of an org file, given its relative name."
-    (concat (file-name-as-directory org-directory) filename))
+     (setq org-agenda-files '("~/org"))
 
-  (defun org-find-file ()
-    "Leverage Helm to quickly open any org files."
-    (interactive)
-    (find-file (concat org-directory
-                       (helm-comp-read "Select your org file: "
-                                       (directory-files org-directory nil "\.org$")))))
-  (setq org-src-fontify-natively t)
+     (defun org-file-path (filename)
+       "Return the absolute address of an org file, given its relative name."
+       (concat (file-name-as-directory org-directory) filename))
+
+     (defun org-find-file ()
+       "Leverage Helm to quickly open any org files."
+       (interactive)
+      ( find-file (concat org-directory
+                          (helm-comp-read "Select your org file: "
+                                          (directory-files org-directory nil "\.org$")))))
+   (setq org-src-fontify-natively t)
+   (add-to-list 'auto-mode-alist '("\\.txt\\'" . org-mode))
+   (add-to-list 'auto-mode-alist '(".*/[0-9]*$" . org-mode))   ;; Journal entries
   (require 'color)
   (if (display-graphic-p)
       (set-face-attribute 'org-block nil :background
                           (color-darken-name
                            (face-attribute 'default :background) 3)))
 
-  (define-key org-mode-map (kbd "C-c a") 'org-agenda)
-(setq org-default-notes-file (concat org-directory "/notes.org"))
-(define-key global-map "\C-cc" 'org-capture)
+   (define-key org-mode-map (kbd "C-c a") 'org-agenda)
+   (setq org-default-notes-file (concat org-directory "/notes.org"))
+   (define-key global-map "\C-cc" 'org-capture)
+  (setq org-capture-templates
+   '(("t" "Todo" entry
+          (file+headline org-default-notes-file "Tasks")
+          "* TODO %?\n %T\n %a")
+     ("n" "New Project Idea" entry
+          (file+headline org-default-notes-file "New Project Idea")
+          "* %?\n ")
+     ("j" "Journal" entry
+          (file+olp+datetree org-default-notes-file "Journal")
+          "* %?\nEntered on %U\n %i\n")
+     ("m" "Meeting Notes" entry
+          (file+headline org-default-notes-file "Meeting Notes")
+          "* %?\n ")
+     ("s" "Scrum" entry
+          (file+olp+datetree org-default-notes-file "Scrum")
+          "* %?\n ")))
+   (setq org-tag-alist '(("@work" . ?w)
+                         ("@home" . ?h)
+                         ("@event" . ?e)
+                         ("project" . ?p)
+                         ("study" . ?s)
+                         ("planned" . ?x)
+                         ("unplanned" . ?y)
+                         ("2watch" . ?w)
+                         ("laptop" . ?l)))
+   (defun org-text-bold () "Wraps the region with asterisks."
+     (interactive)
+     (surround-text "*"))
+   (defun org-text-italics () "Wraps the region with slashes."
+     (interactive)
+     (surround-text "/"))
+   (defun org-text-code () "Wraps the region with equal signs."
+     (interactive)
+     (surround-text "="))
+   (defun meeting-notes ()
+   "Call this after creating an org-mode heading for where the notes for the meeting
+   should be. After calling this function, call 'meeting-done' to reset the environment."
+   (interactive)
+   (outline-mark-subtree)                              ;; Select org-mode section
+   (narrow-to-region (region-beginning) (region-end))  ;; Only show that region
+   (deactivate-mark)
+   (delete-other-windows)                              ;; Get rid of other windows
+   (text-scale-set 2)                                  ;; Text is now readable by others
+   (fringe-mode 0)
+   (message "When finished taking your notes, run meeting-done."))
+   (defun meeting-done ()
+   "Attempt to 'undo' the effects of taking meeting notes."
+   (interactive)
+   (widen)                                       ;; Opposite of narrow-to-region
+   (text-scale-set 0)                            ;; Reset the font size increase
+   (fringe-mode 1)
+   (winner-undo))                                ;; Put the windows back in place
+  (define-key org-mode-map (kbd "C-c m o") 'meeting-notes)
+  (define-key org-mode-map (kbd "C-c m d") 'meeting-done)
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "WAITING(w@/!)" "DOING(D)" "|" "DONE(d!)" "CANCELED(c@)")))
-  (setq org-todo-keyword-faces
-             '(("WAIT" . "yellow")
-               ("CANCELED" . (:foreground "blue" :weight bold))))
+        '((sequence "TODO(t)" "WAITING(w@)" "STARTED(s!)" "|" "DONE(d!)" "CANCELED(c@)")))
+  (font-lock-add-keywords            ; A bit silly but my headers are now
+    'org-mode `(("^\\*+ \\(TODO\\) "  ; shorter, and that is nice canceled
+                (1 (progn (compose-region (match-beginning 1) (match-end 1) "⚑")
+                          nil)))
+               ("^\\*+ \\(WAITING\\) "
+                (1 (progn (compose-region (match-beginning 1) (match-end 1) "⏳")
+                          nil)))
+               ("^\\*+ \\(STARTED\\) "
+                (1 (progn (compose-region (match-beginning 1) (match-end 1) "⚐")
+                          nil)))
+               ("^\\*+ \\(CANCELED\\) "
+                (1 (progn (compose-region (match-beginning 1) (match-end 1) "✘")
+                          nil)))
+               ("^\\*+ \\(DONE\\) "
+                (1 (progn (compose-region (match-beginning 1) (match-end 1) "✔")
+                          nil)))))
+  ;; (setq org-todo-keyword-faces
+  ;;            '(("WAIT" . "yellow")
+  ;;              ("CANCELED" . (:foreground "blue" :weight bold))))
   (add-hook 'org-mode-hook 'flyspell-mode)
   (add-hook 'text-mode-hook 'flyspell-mode)
   (org-babel-do-load-languages
@@ -275,15 +347,21 @@
            (shell . t)
            (ledger . t)
            (org . t)
+           (js . t)
+           (sql . t)
+           (awk . t)
+           (sed . t)
+           (ditaa . t)
            (latex . t)
+           (kotlin . t)
            (haskell . t))))
   (use-package org-bullets
     :config (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
   (setq org-startup-with-inline-images t)
   (require 'ox-md)
   (global-set-key (kbd "<f5>") 'org-find-file)
-  (use-package org-journal
-    :custom (org-journal-dir "~/org/journal" "Set journal location"))
+  (use-package org-journal)
+    ;; :custom (org-journal-dir "~/org/" "Set journal location"))
 (use-package ox-reveal
   :config
     (require 'ox-reveal)
@@ -319,19 +397,23 @@
   :config (global-set-key "\C-s" 'swiper))
   (use-package counsel
     :config
-      (global-set-key (kbd "M-x") 'counsel-M-x)
+      ;; (global-set-key (kbd "M-x") 'counsel-M-x)
       (global-set-key (kbd "C-x C-f") 'counsel-find-file)
       (global-set-key (kbd "<f1> f") 'counsel-describe-function)
       (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
       (global-set-key (kbd "<f1> l") 'counsel-find-library)
       (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
       (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-      (global-set-key (kbd "C-c g") 'counsel-git)
-      (global-set-key (kbd "C-c j") 'counsel-git-grep)
-      (global-set-key (kbd "C-c k") 'counsel-ag)
-      (global-set-key (kbd "C-x l") 'counsel-locate)
-      (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+      ;; (global-set-key (kbd "C-c g") 'counsel-git)
+      ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
+      ;; (global-set-key (kbd "C-c k") 'counsel-ag)
+      ;; (global-set-key (kbd "C-x l") 'counsel-locate)
+      ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
       (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history))
+   (use-package smex
+     :ensure t
+     :bind (("M-x" . smex))
+     :config (smex-initialize))
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory
                                                "backups"))))
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -685,102 +767,19 @@
       (shell-command "go test . -coverprofile=cover.out")
       (go-coverage "cover.out")
       (rotate:even-horizontal))
+   (use-package kotlin-mode)
+   (use-package ob-kotlin)
+   (require 'ob-kotlin)
   (add-hook 'python-mode-hook 'electric-operator-mode)
   (setq python-shell-interpreter "ipython"
         python-shell-interpreter-args "--simple-prompt -i")
   (use-package company-jedi
     :config (add-to-list 'company-backends 'company-jedi))
-  (defun pipenv-activate ()
-    (interactive)
-    (pythonic-activate (shell-command-to-string "pipenv --venv")))
-
-  (defun pipenv-deactivate ()
-    (interactive)
-    (pythonic-deactivate))
   (use-package dockerfile-mode
     :mode "Dockerfile\\'")
   (use-package docker-compose-mode
     :mode "docker-compose\\'")
-  ;; (use-package syslog-mode)
   (add-to-list 'auto-mode-alist '("\\.log\\'" . auto-revert-tail-mode))
-  (defun open-syslog ()
-    (interactive)
-    (find-file "/var/log/syslog")
-    ;; (syslog-mode)
-    (goto-char (point-max)))
-  (use-package eshell
-    :init
-    (setq eshell-scroll-to-bottom-on-input 'all
-          eshell-error-if-no-glob t
-          eshell-hist-ignoredups t
-          eshell-save-history-on-exit t
-          eshell-prefer-lisp-functions nil
-          eshell-destroy-buffer-when-process-dies t))
-  (setq eshell-prompt-function
-        (lambda ()
-          (concat
-           (propertize "┌─[" 'face `(:foreground "green"))
-           (propertize (user-login-name) 'face `(:foreground "red"))
-           (propertize "@" 'face `(:foreground "green"))
-           (propertize (system-name) 'face `(:foreground "lightblue"))
-           (propertize "]──[" 'face `(:foreground "green"))
-           (propertize (format-time-string "%H:%M" (current-time)) 'face `(:foreground "yellow"))
-           (propertize "]──[" 'face `(:foreground "green"))
-           (propertize (concat (eshell/pwd)) 'face `(:foreground "white"))
-           (propertize "]\n" 'face `(:foreground "green"))
-           (propertize "└─>" 'face `(:foreground "green"))
-           (propertize (if (= (user-uid) 0) " # " " $ ") 'face `(:foreground "green"))
-           )))
-  (setq eshell-visual-commands '("htop" "vi" "screen" "top" "less"
-                                 "more" "lynx" "ncftp" "pine" "tin" "trn" "elm"
-                                 "vim"))
-
-  (setq eshell-visual-subcommands '("git" "log" "diff" "show" "ssh"))
-  (setenv "PAGER" "cat")
-  (use-package eshell-autojump)
-  (defalias 'ff 'find-file)
-  (defalias 'd 'dired)
-  (defun eshell/clear ()
-    (let ((inhibit-read-only t))
-      (erase-buffer)))
-  (defun eshell/gst (&rest args)
-      (magit-status (pop args) nil)
-      (eshell/echo))   ;; The echo command suppresses output
-  (defun eshell/-buffer-as-args (buffer separator command)
-    "Takes the contents of BUFFER, and splits it on SEPARATOR, and
-  runs the COMMAND with the contents as arguments. Use an argument
-  `%' to substitute the contents at a particular point, otherwise,
-  they are appended."
-    (let* ((lines (with-current-buffer buffer
-                    (split-string
-                     (buffer-substring-no-properties (point-min) (point-max))
-                     separator)))
-           (subcmd (if (-contains? command "%")
-                       (-flatten (-replace "%" lines command))
-                     (-concat command lines)))
-           (cmd-str  (string-join subcmd " ")))
-      (message cmd-str)
-      (eshell-command-result cmd-str)))
-
-  (defun eshell/bargs (buffer &rest command)
-    "Passes the lines from BUFFER as arguments to COMMAND."
-    (eshell/-buffer-as-args buffer "\n" command))
-
-  (defun eshell/sargs (buffer &rest command)
-    "Passes the words from BUFFER as arguments to COMMAND."
-    (eshell/-buffer-as-args buffer nil command))
-  (defun eshell/close ()
-    (delete-window))
-  (add-hook 'eshell-mode-hook
-            (lambda ()
-              (define-key eshell-mode-map (kbd "C-M-a") 'eshell-previous-prompt)
-              (define-key eshell-mode-map (kbd "C-M-e") 'eshell-next-prompt)
-              (define-key eshell-mode-map (kbd "M-r") 'helm-eshell-history)))
-  (defun eshell-pop--kill-and-delete-window ()
-    (unless (one-window-p)
-      (delete-window)))
-
-  (add-hook 'eshell-exit-hook 'eshell-pop--kill-and-delete-window)
   (require 'dired-x)
   (setq dired-listing-switches "-alh")
   (use-package yaml-mode
