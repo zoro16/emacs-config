@@ -488,7 +488,7 @@ Useful if file changed on disk
                          ("2watch" . ?w)
                          ("laptop" . ?l)))
    #+END_SRC
-**  Short-Cut keys to make it easier to edit text
+** Short-Cut keys to make it easier to edit text
    #+BEGIN_SRC emacs-lisp
    (defun org-text-bold () "Wraps the region with asterisks."
      (interactive)
