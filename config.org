@@ -1,6 +1,7 @@
 #+TITLE: Emacs Configuration
 #+AUTHOR: Mohamed Saleh A. Abdelgadir
 
+
 * How to use
 The =.emacs= file in home directory should only contain
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -410,29 +411,34 @@ Useful if file changed on disk
   (global-set-key (kbd "C-x C-;") 'comment-line)
 #+END_SRC
 
-* Publishing and task management with =Org-mode=
+* Org-Mode
 ** Set environment
-#+BEGIN_SRC emacs-lisp
-  (use-package f)
-  (use-package org)
-  (setq org-directory "~/org/")
-  (setq org-agendafiles '("~/org"))
+   #+BEGIN_SRC emacs-lisp
+     (use-package f)
+     (use-package org)
 
-  (defun org-file-path (filename)
-    "Return the absolute address of an org file, given its relative name."
-    (concat (file-name-as-directory org-directory) filename))
+     (setq org-agenda-files '("~/org"))
 
-  (defun org-find-file ()
-    "Leverage Helm to quickly open any org files."
-    (interactive)
-    (find-file (concat org-directory
-                       (helm-comp-read "Select your org file: "
-                                       (directory-files org-directory nil "\.org$")))))
-#+END_SRC
+     (defun org-file-path (filename)
+       "Return the absolute address of an org file, given its relative name."
+       (concat (file-name-as-directory org-directory) filename))
+
+     (defun org-find-file ()
+       "Leverage Helm to quickly open any org files."
+       (interactive)
+      ( find-file (concat org-directory
+                          (helm-comp-read "Select your org file: "
+                                          (directory-files org-directory nil "\.org$")))))
+   #+END_SRC
 ** Use syntax highlighting in source blocks while editing
-#+BEGIN_SRC emacs-lisp
-  (setq org-src-fontify-natively t)
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+   (setq org-src-fontify-natively t)
+   #+END_SRC
+** Use =org-mode= for =*.txt= files
+   #+BEGIN_SRC emacs-lisp
+   (add-to-list 'auto-mode-alist '("\\.txt\\'" . org-mode))
+   (add-to-list 'auto-mode-alist '(".*/[0-9]*$" . org-mode))   ;; Journal entries
+   #+END_SRC
 ** Set a dark background for source blocks
 #+BEGIN_SRC emacs-lisp
   (require 'color)
@@ -443,21 +449,108 @@ Useful if file changed on disk
 
 #+END_SRC
 ** Setup Org Agenda
-#+BEGIN_SRC emacs-lisp
-  (define-key org-mode-map (kbd "C-c a") 'org-agenda)
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+   (define-key org-mode-map (kbd "C-c a") 'org-agenda)
+   #+END_SRC
 ** Setup Org Capture
-#+BEGIN_SRC emacs-lisp
-(setq org-default-notes-file (concat org-directory "/notes.org"))
-(define-key global-map "\C-cc" 'org-capture)
-#+END_SRC
-** Add more states
+   #+BEGIN_SRC emacs-lisp
+   (setq org-default-notes-file (concat org-directory "/notes.org"))
+   (define-key global-map "\C-cc" 'org-capture)
+   #+END_SRC
+** Org Capture Templates
+   #+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates
+   '(("t" "Todo" entry
+          (file+headline org-default-notes-file "Tasks")
+          "* TODO %?\n %T\n %a")
+     ("n" "New Project Idea" entry
+          (file+headline org-default-notes-file "New Project Idea")
+          "* %?\n ")
+     ("j" "Journal" entry
+          (file+olp+datetree org-default-notes-file "Journal")
+          "* %?\nEntered on %U\n %i\n")
+     ("m" "Meeting Notes" entry
+          (file+headline org-default-notes-file "Meeting Notes")
+          "* %?\n ")
+     ("s" "Scrum" entry
+          (file+olp+datetree org-default-notes-file "Scrum")
+          "* %?\n ")))
+   #+END_SRC
+** Set list of Tags
+   #+BEGIN_SRC emacs-lisp
+   (setq org-tag-alist '(("@work" . ?w)
+                         ("@home" . ?h)
+                         ("@event" . ?e)
+                         ("project" . ?p)
+                         ("study" . ?s)
+                         ("planned" . ?x)
+                         ("unplanned" . ?y)
+                         ("2watch" . ?w)
+                         ("laptop" . ?l)))
+   #+END_SRC
+**  Short-Cut keys to make it easier to edit text
+   #+BEGIN_SRC emacs-lisp
+   (defun org-text-bold () "Wraps the region with asterisks."
+     (interactive)
+     (surround-text "*"))
+   (defun org-text-italics () "Wraps the region with slashes."
+     (interactive)
+     (surround-text "/"))
+   (defun org-text-code () "Wraps the region with equal signs."
+     (interactive)
+     (surround-text "="))
+   #+END_SRC
+** Setup Meeting-Notes mode
+   #+BEGIN_SRC emacs-lisp
+   (defun meeting-notes ()
+   "Call this after creating an org-mode heading for where the notes for the meeting
+   should be. After calling this function, call 'meeting-done' to reset the environment."
+   (interactive)
+   (outline-mark-subtree)                              ;; Select org-mode section
+   (narrow-to-region (region-beginning) (region-end))  ;; Only show that region
+   (deactivate-mark)
+   (delete-other-windows)                              ;; Get rid of other windows
+   (text-scale-set 2)                                  ;; Text is now readable by others
+   (fringe-mode 0)
+   (message "When finished taking your notes, run meeting-done."))
+   #+END_SRC
+   #+BEGIN_SRC emacs-lisp
+   (defun meeting-done ()
+   "Attempt to 'undo' the effects of taking meeting notes."
+   (interactive)
+   (widen)                                       ;; Opposite of narrow-to-region
+   (text-scale-set 0)                            ;; Reset the font size increase
+   (fringe-mode 1)
+   (winner-undo))                                ;; Put the windows back in place
+   #+END_SRC
+** KeyBindings for Meeting-Notes
+  #+BEGIN_SRC emacs-lisp
+  (define-key org-mode-map (kbd "C-c m o") 'meeting-notes)
+  (define-key org-mode-map (kbd "C-c m d") 'meeting-done)
+  #+END_SRC
+** Add more TODO keywords
 #+BEGIN_SRC emacs-lisp
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "WAITING(w@/!)" "DOING(D)" "|" "DONE(d!)" "CANCELED(c@)")))
-  (setq org-todo-keyword-faces
-             '(("WAIT" . "yellow")
-               ("CANCELED" . (:foreground "blue" :weight bold))))
+        '((sequence "TODO(t)" "WAITING(w@)" "STARTED(s!)" "|" "DONE(d!)" "CANCELED(c@)")))
+  (font-lock-add-keywords            ; A bit silly but my headers are now
+    'org-mode `(("^\\*+ \\(TODO\\) "  ; shorter, and that is nice canceled
+                (1 (progn (compose-region (match-beginning 1) (match-end 1) "⚑")
+                          nil)))
+               ("^\\*+ \\(WAITING\\) "
+                (1 (progn (compose-region (match-beginning 1) (match-end 1) "⏳")
+                          nil)))
+               ("^\\*+ \\(STARTED\\) "
+                (1 (progn (compose-region (match-beginning 1) (match-end 1) "⚐")
+                          nil)))
+               ("^\\*+ \\(CANCELED\\) "
+                (1 (progn (compose-region (match-beginning 1) (match-end 1) "✘")
+                          nil)))
+               ("^\\*+ \\(DONE\\) "
+                (1 (progn (compose-region (match-beginning 1) (match-end 1) "✔")
+                          nil)))))
+  ;; (setq org-todo-keyword-faces
+  ;;            '(("WAIT" . "yellow")
+  ;;              ("CANCELED" . (:foreground "blue" :weight bold))))
 #+END_SRC
 ** Enable =flyspell=
 #+BEGIN_SRC emacs-lisp
@@ -475,14 +568,20 @@ Useful if file changed on disk
            (plantuml . t)
            (python . t)
            (gnuplot . t)
-           ;;(shell . t)
+           (shell . t)
            (ledger . t)
            (org . t)
+           (js . t)
+           (sql . t)
+           (awk . t)
+           (sed . t)
+           (ditaa . t)
            (latex . t)
+           (kotlin . t)
            (haskell . t))))
 #+END_SRC
 ** Enable =org-bullets=
-Make org files a bit more readable
+   Make org files a bit more readable
 #+BEGIN_SRC emacs-lisp
   (use-package org-bullets
     :config (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
@@ -501,8 +600,8 @@ Make org files a bit more readable
 #+END_SRC
 ** Use =org-journal=
 #+BEGIN_SRC emacs-lisp
-  (use-package org-journal
-    :custom (org-journal-dir "~/org/journal" "Set journal location"))
+  (use-package org-journal)
+    ;; :custom (org-journal-dir "~/org/" "Set journal location"))
 #+END_SRC
 ** Presentations with =reveal.js=
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -610,20 +709,27 @@ Inspired from [[https://github.com/technomancy/better-defaults]]
 #+BEGIN_SRC emacs-lisp
   (use-package counsel
     :config
-      (global-set-key (kbd "M-x") 'counsel-M-x)
+      ;; (global-set-key (kbd "M-x") 'counsel-M-x)
       (global-set-key (kbd "C-x C-f") 'counsel-find-file)
       (global-set-key (kbd "<f1> f") 'counsel-describe-function)
       (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
       (global-set-key (kbd "<f1> l") 'counsel-find-library)
       (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
       (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-      (global-set-key (kbd "C-c g") 'counsel-git)
-      (global-set-key (kbd "C-c j") 'counsel-git-grep)
-      (global-set-key (kbd "C-c k") 'counsel-ag)
-      (global-set-key (kbd "C-x l") 'counsel-locate)
-      (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+      ;; (global-set-key (kbd "C-c g") 'counsel-git)
+      ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
+      ;; (global-set-key (kbd "C-c k") 'counsel-ag)
+      ;; (global-set-key (kbd "C-x l") 'counsel-locate)
+      ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
       (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history))
 #+END_SRC
+** Use =smex=
+   #+BEGIN_SRC emacs-lisp
+   (use-package smex
+     :ensure t
+     :bind (("M-x" . smex))
+     :config (smex-initialize))
+   #+END_SRC
 ** Save all backup files to a common folder
 #+BEGIN_SRC emacs-lisp
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory
@@ -1322,7 +1428,16 @@ Simple function to see the test coverage of the current open buffer
       (go-coverage "cover.out")
       (rotate:even-horizontal))
 #+END_SRC
-
+* Kotlin
+** Enable =kotlin-mode=
+   #+BEGIN_SRC emacs-lisp
+   (use-package kotlin-mode)
+    #+END_SRC
+** Enable =ob-kotlin=
+   #+BEGIN_SRC emacs-lisp
+   (use-package ob-kotlin)
+   (require 'ob-kotlin)
+   #+END_SRC
 * Python
 ** Setup =python-mode=
 Need to install IPython first with =pip install ipython=.
@@ -1349,21 +1464,9 @@ Assuming that it would be at least IPython 5 so ask for =simple-prompt=.
     :mode "docker-compose\\'")
 #+END_SRC
 * Logs
-** Enable =syslog-mode=
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package syslog-mode)
-#+END_SRC
 ** Turn on =auto-revert-tail-mode= for log files
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'auto-mode-alist '("\\.log\\'" . auto-revert-tail-mode))
-#+END_SRC
-** Quickly check syslog
-#+BEGIN_SRC emacs-lisp
-  (defun open-syslog ()
-    (interactive)
-    (find-file "/var/log/syslog")
-    ;; (syslog-mode)
-    (goto-char (point-max)))
 #+END_SRC
 * Dired
 ** Enable =dired-x=

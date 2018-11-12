@@ -233,36 +233,108 @@
 (global-set-key (kbd "<end>") 'end-of-buffer)
 (global-set-key (kbd "C-c q") 'auto-fill-mode)
   (global-set-key (kbd "C-x C-;") 'comment-line)
-  (use-package f)
-  (use-package org)
-  (setq org-directory "~/org/")
-  (setq org-agendafiles '("~/org"))
+     (use-package f)
+     (use-package org)
 
-  (defun org-file-path (filename)
-    "Return the absolute address of an org file, given its relative name."
-    (concat (file-name-as-directory org-directory) filename))
+     (setq org-agenda-files '("~/org"))
 
-  (defun org-find-file ()
-    "Leverage Helm to quickly open any org files."
-    (interactive)
-    (find-file (concat org-directory
-                       (helm-comp-read "Select your org file: "
-                                       (directory-files org-directory nil "\.org$")))))
-  (setq org-src-fontify-natively t)
+     (defun org-file-path (filename)
+       "Return the absolute address of an org file, given its relative name."
+       (concat (file-name-as-directory org-directory) filename))
+
+     (defun org-find-file ()
+       "Leverage Helm to quickly open any org files."
+       (interactive)
+      ( find-file (concat org-directory
+                          (helm-comp-read "Select your org file: "
+                                          (directory-files org-directory nil "\.org$")))))
+   (setq org-src-fontify-natively t)
+   (add-to-list 'auto-mode-alist '("\\.txt\\'" . org-mode))
+   (add-to-list 'auto-mode-alist '(".*/[0-9]*$" . org-mode))   ;; Journal entries
   (require 'color)
   (if (display-graphic-p)
       (set-face-attribute 'org-block nil :background
                           (color-darken-name
                            (face-attribute 'default :background) 3)))
 
-  (define-key org-mode-map (kbd "C-c a") 'org-agenda)
-(setq org-default-notes-file (concat org-directory "/notes.org"))
-(define-key global-map "\C-cc" 'org-capture)
+   (define-key org-mode-map (kbd "C-c a") 'org-agenda)
+   (setq org-default-notes-file (concat org-directory "/notes.org"))
+   (define-key global-map "\C-cc" 'org-capture)
+  (setq org-capture-templates
+   '(("t" "Todo" entry
+          (file+headline org-default-notes-file "Tasks")
+          "* TODO %?\n %T\n %a")
+     ("n" "New Project Idea" entry
+          (file+headline org-default-notes-file "New Project Idea")
+          "* %?\n ")
+     ("j" "Journal" entry
+          (file+olp+datetree org-default-notes-file "Journal")
+          "* %?\nEntered on %U\n %i\n")
+     ("m" "Meeting Notes" entry
+          (file+headline org-default-notes-file "Meeting Notes")
+          "* %?\n ")
+     ("s" "Scrum" entry
+          (file+olp+datetree org-default-notes-file "Scrum")
+          "* %?\n ")))
+   (setq org-tag-alist '(("@work" . ?w)
+                         ("@home" . ?h)
+                         ("@event" . ?e)
+                         ("project" . ?p)
+                         ("study" . ?s)
+                         ("planned" . ?x)
+                         ("unplanned" . ?y)
+                         ("2watch" . ?w)
+                         ("laptop" . ?l)))
+   (defun org-text-bold () "Wraps the region with asterisks."
+     (interactive)
+     (surround-text "*"))
+   (defun org-text-italics () "Wraps the region with slashes."
+     (interactive)
+     (surround-text "/"))
+   (defun org-text-code () "Wraps the region with equal signs."
+     (interactive)
+     (surround-text "="))
+   (defun meeting-notes ()
+   "Call this after creating an org-mode heading for where the notes for the meeting
+   should be. After calling this function, call 'meeting-done' to reset the environment."
+   (interactive)
+   (outline-mark-subtree)                              ;; Select org-mode section
+   (narrow-to-region (region-beginning) (region-end))  ;; Only show that region
+   (deactivate-mark)
+   (delete-other-windows)                              ;; Get rid of other windows
+   (text-scale-set 2)                                  ;; Text is now readable by others
+   (fringe-mode 0)
+   (message "When finished taking your notes, run meeting-done."))
+   (defun meeting-done ()
+   "Attempt to 'undo' the effects of taking meeting notes."
+   (interactive)
+   (widen)                                       ;; Opposite of narrow-to-region
+   (text-scale-set 0)                            ;; Reset the font size increase
+   (fringe-mode 1)
+   (winner-undo))                                ;; Put the windows back in place
+  (define-key org-mode-map (kbd "C-c m o") 'meeting-notes)
+  (define-key org-mode-map (kbd "C-c m d") 'meeting-done)
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "WAITING(w@/!)" "DOING(D)" "|" "DONE(d!)" "CANCELED(c@)")))
-  (setq org-todo-keyword-faces
-             '(("WAIT" . "yellow")
-               ("CANCELED" . (:foreground "blue" :weight bold))))
+        '((sequence "TODO(t)" "WAITING(w@)" "STARTED(s!)" "|" "DONE(d!)" "CANCELED(c@)")))
+  (font-lock-add-keywords            ; A bit silly but my headers are now
+    'org-mode `(("^\\*+ \\(TODO\\) "  ; shorter, and that is nice canceled
+                (1 (progn (compose-region (match-beginning 1) (match-end 1) "⚑")
+                          nil)))
+               ("^\\*+ \\(WAITING\\) "
+                (1 (progn (compose-region (match-beginning 1) (match-end 1) "⏳")
+                          nil)))
+               ("^\\*+ \\(STARTED\\) "
+                (1 (progn (compose-region (match-beginning 1) (match-end 1) "⚐")
+                          nil)))
+               ("^\\*+ \\(CANCELED\\) "
+                (1 (progn (compose-region (match-beginning 1) (match-end 1) "✘")
+                          nil)))
+               ("^\\*+ \\(DONE\\) "
+                (1 (progn (compose-region (match-beginning 1) (match-end 1) "✔")
+                          nil)))))
+  ;; (setq org-todo-keyword-faces
+  ;;            '(("WAIT" . "yellow")
+  ;;              ("CANCELED" . (:foreground "blue" :weight bold))))
   (add-hook 'org-mode-hook 'flyspell-mode)
   (add-hook 'text-mode-hook 'flyspell-mode)
   (org-babel-do-load-languages
@@ -275,15 +347,21 @@
            ;;(shell . t)
            (ledger . t)
            (org . t)
+           (js . t)
+           (sql . t)
+           (awk . t)
+           (sed . t)
+           (ditaa . t)
            (latex . t)
+           (kotlin . t)
            (haskell . t))))
   (use-package org-bullets
     :config (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
   (setq org-startup-with-inline-images t)
   (require 'ox-md)
   (global-set-key (kbd "<f5>") 'org-find-file)
-  (use-package org-journal
-    :custom (org-journal-dir "~/org/journal" "Set journal location"))
+  (use-package org-journal)
+    ;; :custom (org-journal-dir "~/org/" "Set journal location"))
 (use-package ox-reveal
   :config
     (require 'ox-reveal)
@@ -319,19 +397,23 @@
   :config (global-set-key "\C-s" 'swiper))
   (use-package counsel
     :config
-      (global-set-key (kbd "M-x") 'counsel-M-x)
+      ;; (global-set-key (kbd "M-x") 'counsel-M-x)
       (global-set-key (kbd "C-x C-f") 'counsel-find-file)
       (global-set-key (kbd "<f1> f") 'counsel-describe-function)
       (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
       (global-set-key (kbd "<f1> l") 'counsel-find-library)
       (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
       (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-      (global-set-key (kbd "C-c g") 'counsel-git)
-      (global-set-key (kbd "C-c j") 'counsel-git-grep)
-      (global-set-key (kbd "C-c k") 'counsel-ag)
-      (global-set-key (kbd "C-x l") 'counsel-locate)
-      (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+      ;; (global-set-key (kbd "C-c g") 'counsel-git)
+      ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
+      ;; (global-set-key (kbd "C-c k") 'counsel-ag)
+      ;; (global-set-key (kbd "C-x l") 'counsel-locate)
+      ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
       (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history))
+   (use-package smex
+     :ensure t
+     :bind (("M-x" . smex))
+     :config (smex-initialize))
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory
                                                "backups"))))
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -685,6 +767,9 @@
       (shell-command "go test . -coverprofile=cover.out")
       (go-coverage "cover.out")
       (rotate:even-horizontal))
+   (use-package kotlin-mode)
+   (use-package ob-kotlin)
+   (require 'ob-kotlin)
   (add-hook 'python-mode-hook 'electric-operator-mode)
   (setq python-shell-interpreter "ipython"
         python-shell-interpreter-args "--simple-prompt -i")
@@ -694,13 +779,15 @@
     :mode "Dockerfile\\'")
   (use-package docker-compose-mode
     :mode "docker-compose\\'")
-  ;; (use-package syslog-mode)
   (add-to-list 'auto-mode-alist '("\\.log\\'" . auto-revert-tail-mode))
+<<<<<<< HEAD
   (defun open-syslog ()
     (interactive)
     (find-file "/var/log/syslog")
     ;; (syslog-mode)
     (goto-char (point-max)))
+=======
+>>>>>>> a34e632531cb8623f006e72adfe21b4bdbe04eb4
   (require 'dired-x)
   (setq dired-listing-switches "-alh")
   (use-package yaml-mode
