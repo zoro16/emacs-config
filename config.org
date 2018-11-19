@@ -531,7 +531,7 @@ Useful if file changed on disk
 ** Add more TODO keywords
 #+BEGIN_SRC emacs-lisp
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "WAITING(w@)" "STARTED(s!)" "|" "DONE(d!)" "CANCELED(c@)")))
+        '((sequence "TODO(t)" "WAITING(w@)" "STARTED(s!)" "|" "DONE(d!)" "CANCELLED(c@)")))
   (font-lock-add-keywords            ; A bit silly but my headers are now
     'org-mode `(("^\\*+ \\(TODO\\) "  ; shorter, and that is nice canceled
                 (1 (progn (compose-region (match-beginning 1) (match-end 1) "⚑")
@@ -542,7 +542,7 @@ Useful if file changed on disk
                ("^\\*+ \\(STARTED\\) "
                 (1 (progn (compose-region (match-beginning 1) (match-end 1) "⚐")
                           nil)))
-               ("^\\*+ \\(CANCELED\\) "
+               ("^\\*+ \\(CANCELLED\\) "
                 (1 (progn (compose-region (match-beginning 1) (match-end 1) "✘")
                           nil)))
                ("^\\*+ \\(DONE\\) "
@@ -550,7 +550,7 @@ Useful if file changed on disk
                           nil)))))
   ;; (setq org-todo-keyword-faces
   ;;            '(("WAIT" . "yellow")
-  ;;              ("CANCELED" . (:foreground "blue" :weight bold))))
+  ;;              ("CANCELLED" . (:foreground "blue" :weight bold))))
 #+END_SRC
 ** Enable =flyspell=
 #+BEGIN_SRC emacs-lisp
@@ -601,7 +601,7 @@ Useful if file changed on disk
 ** Use =org-journal=
 #+BEGIN_SRC emacs-lisp
   (use-package org-journal)
-    ;; :custom (org-journal-dir "~/org/" "Set journal location"))
+   ;;  :custom (org-journal-dir "~/org/journal" "Set journal location"))
 #+END_SRC
 ** Presentations with =reveal.js=
 #+BEGIN_SRC emacs-lisp :tangle yes
