@@ -460,7 +460,7 @@ Useful if file changed on disk
 ** Org Capture Templates
    #+BEGIN_SRC emacs-lisp
   (setq org-capture-templates
-   '(("t" "Todo" entry
+   '(("t" "Tasks" entry
           (file+headline org-default-notes-file "Tasks")
           "* TODO %?\n %T\n %a")
      ("n" "New Project Idea" entry
@@ -468,7 +468,7 @@ Useful if file changed on disk
           "* %?\n ")
      ("w" "What to study next" entry
           (file+headline org-default-notes-file "What to study next")
-          "* %?\n ")
+          "* TODO %?\n %T\n %a")
      ("j" "Journal" entry
           (file+olp+datetree org-default-notes-file "Journal")
           "* %?\nEntered on %U\n %i\n")
