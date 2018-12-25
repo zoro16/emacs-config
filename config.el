@@ -340,6 +340,7 @@
   ;;              ("CANCELLED" . (:foreground "blue" :weight bold))))
   (add-hook 'org-mode-hook 'flyspell-mode)
   (add-hook 'text-mode-hook 'flyspell-mode)
+  (use-package ob-kotlin)
   (org-babel-do-load-languages
    (quote org-babel-load-languages)
    (quote ((emacs-lisp . t)
@@ -361,7 +362,9 @@
   (use-package org-bullets
     :config (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
   (setq org-startup-with-inline-images t)
-  (require 'ox-md)
+   (use-package ox-twbs)
+   (require 'ox-md)
+   (require 'ox-twbs)
   (global-set-key (kbd "<f5>") 'org-find-file)
   (use-package org-journal)
    ;;  :custom (org-journal-dir "~/org/journal" "Set journal location"))
@@ -718,7 +721,7 @@
     :config
     (add-hook 'js2-mode-hook 'electric-operator-mode)
     (add-hook 'js2-mode-hook 'flycheck-mode)
-    (setq js2-basic-offset 2))
+    (setq js2-basic-offset 4))
   (use-package js2-refactor
     :diminish js2-refactor-mode
     :defer t
@@ -740,6 +743,7 @@
     ;; install it separately via package-install
     ;; `M-x package-install [ret] company`
     (company-mode +1))
+  (use-package json-mode)
   (use-package go-mode
     :config
     (add-hook 'before-save-hook #'gofmt-before-save)

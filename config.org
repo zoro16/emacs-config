@@ -564,6 +564,7 @@ Useful if file changed on disk
    Get additional languages?
    Load them all
 #+BEGIN_SRC emacs-lisp
+  (use-package ob-kotlin)
   (org-babel-do-load-languages
    (quote org-babel-load-languages)
    (quote ((emacs-lisp . t)
@@ -594,9 +595,11 @@ Useful if file changed on disk
   (setq org-startup-with-inline-images t)
 #+END_SRC
 ** Register more exports
-#+BEGIN_SRC emacs-lisp
-  (require 'ox-md)
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+   (use-package ox-twbs)
+   (require 'ox-md)
+   (require 'ox-twbs)
+   #+END_SRC
 ** Setup quick access to org files
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "<f5>") 'org-find-file)
@@ -1313,7 +1316,7 @@ Adding the necessary hooks
     :config
     (add-hook 'js2-mode-hook 'electric-operator-mode)
     (add-hook 'js2-mode-hook 'flycheck-mode)
-    (setq js2-basic-offset 2))
+    (setq js2-basic-offset 4))
 #+END_SRC
 ** Enable =js2-refactor=
 #+BEGIN_SRC emacs-lisp
@@ -1349,6 +1352,10 @@ Useful for React
     ;; `M-x package-install [ret] company`
     (company-mode +1))
 #+END_SRC
+* JSON
+  #+BEGIN_SRC emacs-lisp
+  (use-package json-mode)
+  #+END_SRC
 * Go
 A lot of the config is based on gocode, godef, goimports and gotags
 packages that you should install separately.
