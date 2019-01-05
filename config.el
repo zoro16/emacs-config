@@ -286,7 +286,7 @@
                          ("study" . ?s)
                          ("planned" . ?x)
                          ("unplanned" . ?y)
-                         ("2watch" . ?w)
+                         ("2watch" . ?W)
                          ("laptop" . ?l)))
    (defun org-text-bold () "Wraps the region with asterisks."
      (interactive)

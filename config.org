@@ -463,8 +463,8 @@ Useful if file changed on disk
    '(("t" "Tasks" entry
           (file+headline org-default-notes-file "Tasks")
           "* TODO %?\n %T\n %a")
-     ("n" "New Project Idea" entry
-          (file+headline org-default-notes-file "New Project Idea")
+     ("n" "New Project Ideas" entry
+          (file+headline org-default-notes-file "New Project Ideas")
           "* %?\n ")
      ("w" "What to study next" entry
           (file+headline org-default-notes-file "What to study next")
@@ -488,7 +488,7 @@ Useful if file changed on disk
                          ("study" . ?s)
                          ("planned" . ?x)
                          ("unplanned" . ?y)
-                         ("2watch" . ?w)
+                         ("2watch" . ?W)
                          ("laptop" . ?l)))
    #+END_SRC
 ** Short-Cut keys to make it easier to edit text
