@@ -1119,7 +1119,6 @@ With a twist of helm
          ("C-c C-v" . helm-projectile-ag)
          ("C-c w" . helm-projectile-switch-project)))
 #+END_SRC
-
 ** Enable =company=
 #+BEGIN_SRC emacs-lisp
   (use-package company
@@ -1132,14 +1131,14 @@ With a twist of helm
 #+END_SRC
 ** Enable =flycheck=
 #+BEGIN_SRC emacs-lisp
-  (use-package flycheck
-    :diminish flycheck-mode
-    :config (flycheck-mode 1)
-    (setq flycheck-phpcs-standard "PSR2")
-    (add-hook 'python-mode-hook 'flycheck-mode)
-    (add-hook 'emacs-lisp-mode-hook 'flycheck-mode)
-    (add-hook 'json-mode-hook 'flycheck-mode)
-    (add-hook 'rjsx-mode-hook 'flycheck-mode))
+;;  (use-package flycheck
+;;    :diminish flycheck-mode
+;;    :config (flycheck-mode 1)
+;;    (setq flycheck-phpcs-standard "PSR2")
+;;    (add-hook 'python-mode-hook 'flycheck-mode)
+;;    (add-hook 'emacs-lisp-mode-hook 'flycheck-mode)
+;;    (add-hook 'json-mode-hook 'flycheck-mode)
+;;    (add-hook 'rjsx-mode-hook 'flycheck-mode))
 #+END_SRC
 
 Add a little helm twist to it
@@ -1453,14 +1452,14 @@ Simple function to see the test coverage of the current open buffer
 Need to install IPython first with =pip install ipython=.
 Assuming that it would be at least IPython 5 so ask for =simple-prompt=.
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'python-mode-hook 'electric-operator-mode)
-  (setq python-shell-interpreter "ipython"
-        python-shell-interpreter-args "--simple-prompt -i")
+;;  (add-hook 'python-mode-hook 'electric-operator-mode)
+;;  (setq python-shell-interpreter "ipython"
+;;        python-shell-interpreter-args "--simple-prompt -i")
 #+END_SRC
 ** Enable =company-jedi=
 #+BEGIN_SRC emacs-lisp
-  (use-package company-jedi
-    :config (add-to-list 'company-backends 'company-jedi))
+;;  (use-package company-jedi
+;;    :config (add-to-list 'company-backends 'company-jedi))
 #+END_SRC
 * Docker
 ** Setup =Dockerfile-mode=

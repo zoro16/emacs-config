@@ -264,8 +264,8 @@
    '(("t" "Tasks" entry
           (file+headline org-default-notes-file "Tasks")
           "* TODO %?\n %T\n %a")
-     ("n" "New Project Idea" entry
-          (file+headline org-default-notes-file "New Project Idea")
+     ("n" "New Project Ideas" entry
+          (file+headline org-default-notes-file "New Project Ideas")
           "* %?\n ")
      ("w" "What to study next" entry
           (file+headline org-default-notes-file "What to study next")
@@ -630,14 +630,14 @@
     (setq company-minimum-prefix-length 2)
     (setq company-dabbrev-downcase nil))
   (use-package company-go)
-  (use-package flycheck
-    :diminish flycheck-mode
-    :config (flycheck-mode 1)
-    (setq flycheck-phpcs-standard "PSR2")
-    (add-hook 'python-mode-hook 'flycheck-mode)
-    (add-hook 'emacs-lisp-mode-hook 'flycheck-mode)
-    (add-hook 'json-mode-hook 'flycheck-mode)
-    (add-hook 'rjsx-mode-hook 'flycheck-mode))
+;;  (use-package flycheck
+;;    :diminish flycheck-mode
+;;    :config (flycheck-mode 1)
+;;    (setq flycheck-phpcs-standard "PSR2")
+;;    (add-hook 'python-mode-hook 'flycheck-mode)
+;;    (add-hook 'emacs-lisp-mode-hook 'flycheck-mode)
+;;    (add-hook 'json-mode-hook 'flycheck-mode)
+;;    (add-hook 'rjsx-mode-hook 'flycheck-mode))
 (use-package helm-flycheck
   :bind ("C-c f" . helm-flycheck))
   (use-package electric-operator
@@ -777,11 +777,11 @@
    (use-package kotlin-mode)
    (use-package ob-kotlin)
    (require 'ob-kotlin)
-  (add-hook 'python-mode-hook 'electric-operator-mode)
-  (setq python-shell-interpreter "ipython"
-        python-shell-interpreter-args "--simple-prompt -i")
-  (use-package company-jedi
-    :config (add-to-list 'company-backends 'company-jedi))
+;;  (add-hook 'python-mode-hook 'electric-operator-mode)
+;;  (setq python-shell-interpreter "ipython"
+;;        python-shell-interpreter-args "--simple-prompt -i")
+;;  (use-package company-jedi
+;;    :config (add-to-list 'company-backends 'company-jedi))
   (use-package dockerfile-mode
     :mode "Dockerfile\\'")
   (use-package docker-compose-mode
