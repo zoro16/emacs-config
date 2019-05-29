@@ -63,8 +63,8 @@
 (use-package magit
   :bind ("C-x g" . magit-status))
   (use-package git-timemachine)
-  (use-package magit-gh-pulls
-    :config (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls))
+  ;; (use-package magit-gh-pulls
+  ;;   :config (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls))
   (setq user-full-name "Mohamed Saleh A. Abdelgadir"
         calendar-latitude 5.41666666667
         calendar-longitude 100.316666667
