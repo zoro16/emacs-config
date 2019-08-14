@@ -5,7 +5,7 @@ Written in Org mode.
 This will always be work in progress.
 
 ## How to setup
-Git clone this repo wherever you want, and just insert the following at the top of your init file
+Git clone this repo wherever you want, and just insert the following at the top of your ~init.el~ file
 ```lisp
 (load-file "~/emacs-config/bootstrap.el")
 ```
