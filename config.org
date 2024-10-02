@@ -5,7 +5,7 @@
 * How to use
 The =.emacs= file in home directory should only contain
 #+BEGIN_SRC emacs-lisp :tangle no
-(load-file "~/Essential/emacs-config/bootstrap.el")
+(load-file "~/Developments/configs/emacs-config/bootstrap.el")
 #+END_SRC
 where the path to bootstrap.el is adjusted to wherever you cloned this repo.
 This will also automatically pull the latest version of the config on startup, unless you forbid it with
